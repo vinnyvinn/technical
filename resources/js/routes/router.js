@@ -1,0 +1,55 @@
+import Vue from 'vue';
+import VueRouter from "vue-router";
+import Login from "../components/auth/Login";
+import Register from "../components/auth/Register";
+import ServiceTypes from "../components/maintenance/servicetypes/Index";
+import TrackBy from "../components/maintenance/trackby/Index";
+import FuelBalance from "../components/maintenance/fuelbalance/Index";
+import ServiceProviderTypes from "../components/maintenance/serviceprovidertypes/Index";
+import Machines from "../components/maintenance/machines/Index";
+import JobCard from "../components/maintenance/jobcard/Index";
+import Fuel from "../components/fuels/Index";
+import Expense from "../components/expenses/Index";
+import Supplier from "../components/fuels/suppliers/Index";
+import Checklist from "../components/checklists/Index";
+import AssignChecklist from "../components/checklists/assign/Index";
+import AppShow from "../components/maintenance/jobcard/AppShow";
+import ExternalService from "../components/maintenance/jobcard/externalservice/Index";
+import JobcardReport from "../components/reports/jobs/JobcardReport";
+import FuelReport from "../components/reports/fuels/FuelReport";
+
+
+Vue.use(VueRouter);
+
+function guard(to, from, next) {
+    if (User.loggedIn()) {
+        next();
+    } else {
+        next('/login');
+    }
+}
+const routes = [
+    {path:'/login',component: Login},
+    {path:'/signup',component: Register},
+    {path:'/service-types',component: ServiceTypes, beforeEnter: guard},
+    {path:'/track-by',component: TrackBy, beforeEnter: guard},
+    {path:'/fuel-balance',component: FuelBalance, beforeEnter: guard},
+    {path:'/service-provider-types',component: ServiceProviderTypes, beforeEnter: guard},
+    {path:'/machines',component: Machines, beforeEnter: guard},
+    {path:'/job-card',component:JobCard, beforeEnter: guard},
+    {path:'/fuel',component:Fuel, beforeEnter: guard},
+    {path:'/expense',component:Expense, beforeEnter: guard},
+    {path:'/suppliers',component:Supplier, beforeEnter: guard},
+    {path:'/checklists',component:Checklist, beforeEnter: guard},
+    {path:'/assign-checklist',component:AssignChecklist, beforeEnter: guard},
+    {path:'/job-card/:id',component:AppShow, beforeEnter: guard},
+    {path:'/external-service',component:ExternalService, beforeEnter: guard},
+    {path:'/jobcard-report',component:JobcardReport, beforeEnter: guard},
+    {path:'/fuel-report',component:FuelReport, beforeEnter: guard},
+
+];
+
+export default new VueRouter({
+    routes,
+    mode: 'history'
+});

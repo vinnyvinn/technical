@@ -1,0 +1,305 @@
+<template>
+    <div>
+        <!-- Main content -->
+        <section class="content">
+            <!-- Default box -->
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">{{edit_machine ? 'Update Machine' : 'New Machine'}}</h3>
+                </div>
+                <div class="box-body">
+                    <form @submit.prevent="saveMachine()" id="asset">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Code</label>
+                                    <input type="text" class="form-control" v-model="form.code" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <input type="text" class="form-control" v-model="form.description" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Service Type</label>
+                                    <multiselect
+                                        v-model="value"
+                                        :options="service_types"
+                                        :multiple="true"
+                                        track-by="id"
+                                        :custom-label="customLabel"
+                                        placeholder="Select services"
+                                        @input="updateServices"
+                                    >
+                                    </multiselect>
+                                    </div>
+                                <div class="form-group">
+                                    <label>Insurance Policy</label>
+                                    <select name="status" v-model="form.status" class="form-control" required
+                                            @change="enableUpload()">
+                                        <option value="0">Not Insured</option>
+                                        <option value="1">Insured</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" v-if="show_file">
+                                    <label>Insurance scanned copy</label>
+                                    <input type="file" class="form-control" @change="onFileChange">
+                                </div>
+                                <div class="form-group">
+                                    <label>Track By</label>
+                                    <select name="track_by_id" id="track_by_id" v-model="form.track_by_id"
+                                            class="form-control" @change="trackValue()">
+                                        <option :value="track.id" v-for="track in tracks" :key="track.id">
+                                            {{track.name}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" v-if="selected_next_maintenance">
+                                    <label>Next {{track_type}} Maintenance</label>
+                                    <input type="number" step="0.001" class="form-control" v-model="form.next_readings"
+                                           required>
+                                </div>
+                                <div class="form-group" v-if="selected_next_maintenance">
+                                    <label>Remind before (No. of {{track_type}})</label>
+                                    <input type="number" class="form-control" v-model="form.reminder_before"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>make</label>
+                                    <input type="text" class="form-control" v-model="form.make" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Year Of Make</label>
+                                    <input type="number" class="form-control" v-model="form.year_of_make" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Year of Registration</label>
+                                    <input type="number" class="form-control" v-model="form.year_of_reg" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Engine No</label>
+                                    <input type="text" class="form-control" v-model="form.engine_no" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Chasis No</label>
+                                    <input type="text" class="form-control" v-model="form.chasis_no" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Warranty Expiry</label>
+                                    <datepicker v-model="form.warranty"></datepicker>
+                                </div>
+                                <div class="form-group">
+                                    <label>Assign To</label>
+                                    <select name="assign_to" id="assign_to" v-model="form.assign_to"
+                                            class="form-control select2">
+                                        <option :value="user.id" v-for="user in users" :key="user.id">{{user.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{{edit_machine ? 'Update' : 'Save'}}</button>
+                        <button type="button" class="btn btn-outline-danger" @click="cancel">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</template>
+<script>
+    import datepicker from 'vuejs-datepicker';
+    import Multiselect from 'vue-multiselect';
+    import 'vue-multiselect/dist/vue-multiselect.min.css';
+    export default {
+        props: ['edit'],
+        data() {
+            return {
+                form: {
+                    code: '',
+                    description: '',
+                    make: '',
+                    track_by_id: '',
+                    year_of_make: '',
+                    year_of_reg: '',
+                    engine_no: '',
+                    chasis_no: '',
+                    assign_to: '',
+                    next_readings: '',
+                    warranty: '',
+                    status: '',
+                    insurance_file: '',
+                    reminder_before:'',
+                    service_type_id:[],
+                    id: ''
+                },
+                value:[],
+                options: ['list', 'of', 'options'],
+                selected: null,
+                selected_next_maintenance: false,
+                track_type: '',
+                edit_machine: this.edit,
+                tracks: {},
+                users: {},
+                show_file: false,
+                service_types:[]
+            }
+        },
+            created() {
+            this.listen();
+            this.getTracks();
+            this.getUsers();
+            this.getServiceTypes();
+        },
+        methods: {
+            customLabel (option) {
+                return `${option.name}`
+            },
+            updateServices(value){
+           let services = [];
+           value.forEach((val) =>  {
+               services.push(val.id);
+           });
+            this.form.service_type_id = services;
+           console.log(this.form.service_type_id);
+            },
+
+            getServiceTypes(){
+                axios.get('service-types')
+                    .then(res => {
+                       this.service_types = res.data
+                    })
+            },
+            onFileChange(e) {
+                let files = e.target.files || e.dataTransfer.files;
+                if (!files.length)
+                    return;
+                this.createImage(files[0]);
+            },
+            createImage(file) {
+                let reader = new FileReader();
+                let vm = this;
+                reader.onload = (e) => {
+                    vm.form.insurance_file = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+            enableUpload() {
+               this.form.status == 1 ? this.show_file = true : this.show_file = false;
+            },
+            saveMachine() {
+                if (parseInt(this.form.next_readings) < parseInt(this.form.reminder_before)){
+                    return this.$toastr.e('Reminder before readings cannot be greater next readings');
+                }
+                this.edit_machine ? this.update() : this.save();
+            },
+            save() {
+                let form = document.getElementById('asset');
+                let formData = new FormData(form);
+                formData.append('insurance_file', this.form.insurance_file);
+                formData.append('code', this.form.code);
+                formData.append('description', this.form.description);
+                formData.append('make', this.form.make);
+                formData.append('track_by_id', this.form.track_by_id);
+                formData.append('year_of_make', this.form.year_of_make);
+                formData.append('year_of_reg', this.form.year_of_reg);
+                formData.append('engine_no', this.form.engine_no);
+                formData.append('chasis_no', this.form.chasis_no);
+                formData.append('assign_to', this.form.assign_to);
+                formData.append('next_readings', this.form.next_readings);
+                formData.append('reminder_before', this.form.reminder_before);
+                formData.append('warranty', this.convertDate(this.form.warranty));
+                formData.append('service_type_id', JSON.stringify(this.form.service_type_id));
+                formData.append('status', this.form.status);
+                const config = {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }
+                 delete this.form.id;
+                axios.post('machines', formData,config)
+                    .then(res =>{
+                       eventBus.$emit('listMachines', res.data)
+                    })
+                    .catch(error => error.response)
+            },
+            update() {
+                let form = document.getElementById('asset');
+                let formData = new FormData(form);
+                formData.append('insurance_file', this.form.insurance_file);
+                formData.append('code', this.form.code);
+                formData.append('description', this.form.description);
+                formData.append('make', this.form.make);
+                formData.append('track_by_id', this.form.track_by_id);
+                formData.append('year_of_make', this.form.year_of_make);
+                formData.append('year_of_reg', this.form.year_of_reg);
+                formData.append('engine_no', this.form.engine_no);
+                formData.append('chasis_no', this.form.chasis_no);
+                formData.append('assign_to', this.form.assign_to);
+                formData.append('reminder_before', this.form.reminder_before);
+                formData.append('next_readings', this.form.next_readings);
+                formData.append('warranty', this.convertDate(this.form.warranty));
+                formData.append('service_type_id', JSON.stringify(this.form.service_type_id));
+                formData.append('status', this.form.status);
+                formData.append('_method', 'PUT');
+                const config = {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }
+                axios.post(`machines/${this.form.id}`, formData,config)
+                    .then(res => {
+                        console.log(res.data);
+                        this.edit_machine = false;
+                        eventBus.$emit('updateMachine', res.data);
+                    })
+                    .catch(error => error.response)
+            },
+            convertDate(str) {
+                var date = new Date(str),
+                    mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+                return [date.getFullYear(), mnth, day].join("-");
+            },
+            trackValue() {
+                this.tracks.forEach(track => {
+                    if (track.id === this.form.track_by_id) {
+                        this.track_type = track.name;
+                        this.selected_next_maintenance = true;
+                        return;
+                    }
+
+                })
+            },
+            cancel() {
+                eventBus.$emit('cancel')
+            },
+            getTracks() {
+                axios.get('track-by')
+                    .then(tracks => {
+                        this.tracks = tracks.data;
+                    })
+
+            },
+            getUsers() {
+                axios.get('users')
+                    .then(users => {
+                        this.users = users.data
+                    });
+            },
+            listen() {
+                if (this.edit) {
+                    this.form = this.$store.state.machine,
+                    this.$store.state.machine.status === 1 ? this.show_file = true :'';
+                    this.selected_next_maintenance = true;
+                    this.track_type = this.$store.state.machine.track_name
+                }
+            }
+        },
+        components:{
+            datepicker,
+            Multiselect
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>
