@@ -7,7 +7,6 @@ use App\FuelType;
 use App\Http\Resources\MachineResource;
 use App\Machine;
 use App\SageAsset;
-use App\ServiceType;
 use App\TrackBy;
 use App\User;
 use Carbon\Carbon;
@@ -70,17 +69,18 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $name = '';
+        $machine = Machine::find($id);
+        $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
+        $machine->update($request->except(['track_name','assign_to_id','service_type_id','service_types','insurance_file']));
+        $machine->service_types()->sync(json_decode($request->get('service_type_id')));
         if($request->get('insurance_file') && $request->get('insurance_file')!='undefined')
         {
             $image = $request->get('insurance_file');
             $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
             \Image::make($request->get('insurance_file'))->save(public_path('uploads/').$name);
+            $machine->insurance_file = $name;
+            $machine->save();
         }
-        $request['insurance_file'] = $name;
-        $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
-        Machine::find($id)->update($request->except(['track_name','assign_to_id','service_type_id','service_types']));
-        Machine::find($id)->service_types()->sync(json_decode($request->get('service_type_id')));
         return response()->json(new MachineResource(Machine::find($id)));
     }
     public function importMachines()
@@ -90,7 +90,6 @@ class MachineController extends Controller
             ->where("iAssetTypeNo", 2)
             ->orWhere("iAssetTypeNo", 7)
             ->get();
-
         $existing = Machine::get();
         $found_assets = [];
         if ($existing->count() < 1){

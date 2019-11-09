@@ -29,7 +29,6 @@
                     <ul class="treeview-menu">
                         <li><router-link to="/external-service">External Services</router-link></li>
                         </ul>
-
                 </li>
                 <li class="treeview">
                     <router-link to="/checklists"><i class="fa fa-check-square-o"></i> <span>Checklists</span>
@@ -40,7 +39,6 @@
                     <ul class="treeview-menu">
                         <li><router-link to="/assign-checklist">Assign Checklists</router-link></li>
                         </ul>
-
                 </li>
                 <li><router-link to="/fuel"><i class="fa fa-database"></i> <span>Fuel</span></router-link></li>
                 <li class="treeview">
@@ -66,6 +64,8 @@
                         <li><router-link to="/track-by">Track By</router-link></li>
                         <li><router-link to="/service-types">Service Types</router-link></li>
                         <li><router-link to="/expense">Expenses</router-link></li>
+                        <li><router-link to="/parts">Parts</router-link></li>
+                        <li><router-link to="/categories">Categories</router-link></li>
                     </ul>
                 </li>
             </ul>

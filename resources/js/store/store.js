@@ -20,7 +20,9 @@ export default new Vuex.Store({
         assign_checklists:{},
         external_services:{},
         jobs:{},
-        fuel_reports:{}
+        fuel_reports:{},
+        parts:{},
+        categories:{}
     },
     mutations:{
      pathTo(state, to) {
@@ -70,6 +72,12 @@ export default new Vuex.Store({
         },
         listFuelReports(state,fuel){
          state.fuel_reports = fuel;
+        },
+        updatePart(state,part){
+         state.parts = part;
+        },
+        updateCategory(state,category){
+         state.categories = category;
         }
     },
     actions:{
@@ -120,6 +128,12 @@ export default new Vuex.Store({
         },
         listFuelReports({commit},fuel){
         commit('listFuelReports',fuel);
+        },
+        updatePart({commit},part){
+        commit('updatePart',part);
+        },
+        updateCategory({commit},category){
+        commit('updateCategory',category);
         }
     }
 })

@@ -35,6 +35,9 @@ Route::apiResource('checklists','ChecklistsController');
 Route::apiResource('expiry-types','ExpiryDatesController');
 Route::apiResource('assign-checklist','AssignChecklistController');
 Route::apiResource('external-services','ExternalServiceController');
+Route::apiResource('parts','PartsController');
+Route::apiResource('categories','CategoriesController');
+Route::get('import-parts','PartsController@importParts');
 Route::post('job-report','ReportsController@JobReport');
 Route::post('fuel-report','ReportsController@FuelReport');
 

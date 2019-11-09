@@ -35,6 +35,8 @@ class CreateMachinesTable extends Migration
             $table->float('odometer_readings')->nullable()->default(0);
             $table->date('next_service_date')->nullable();
             $table->string('insurance_file')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('expiry_date')->nullable();
             $table->integer('reminder_before')->nullable()->default(0);
             $table->timestamps();
         });

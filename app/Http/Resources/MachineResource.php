@@ -35,6 +35,8 @@ class MachineResource extends JsonResource
             'status' => $this->status,
             'odometer_readings' => $this->odometer_readings,
             'service_types' => $this->service_types,
+            'start_date' => $this->start_date,
+            'expiry_date' => $this->expiry_date
              ];
     }
 }

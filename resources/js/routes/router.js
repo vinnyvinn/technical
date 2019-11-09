@@ -17,6 +17,8 @@ import AppShow from "../components/maintenance/jobcard/AppShow";
 import ExternalService from "../components/maintenance/jobcard/externalservice/Index";
 import JobcardReport from "../components/reports/jobs/JobcardReport";
 import FuelReport from "../components/reports/fuels/FuelReport";
+import Parts from "../components/parts/Index";
+import Category from "../components/categories/Index";
 
 
 Vue.use(VueRouter);
@@ -46,6 +48,8 @@ const routes = [
     {path:'/external-service',component:ExternalService, beforeEnter: guard},
     {path:'/jobcard-report',component:JobcardReport, beforeEnter: guard},
     {path:'/fuel-report',component:FuelReport, beforeEnter: guard},
+    {path:'/parts',component:Parts, beforeEnter: guard},
+    {path:'/categories',component:Category, beforeEnter: guard},
 
 ];
 

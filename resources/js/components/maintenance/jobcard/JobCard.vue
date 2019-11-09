@@ -51,9 +51,10 @@
                                 <div class="form-group" v-if="internal">
                                     <label>Service Provider</label>
                                     <select name="supplier_id" class="form-control" v-model="form.supplier_id">
-                                        <option :value="s.id" v-for="s in internal_suppliers" :key="s.id">{{s.name}}</option>
+                                        <option :value="s.id" v-for="s in internal_suppliers" :key="s.id">{{s.name}}
+                                        </option>
                                     </select>
-                                  </div>
+                                </div>
                                 <div class="form-group">
                                     <label>Expenses</label>
                                     <table>
@@ -61,15 +62,18 @@
                                             <th></th>
                                             <th></th>
                                             <th></th>
-                                            <th></th>
                                         </tr>
                                         <tr v-for="(item,k) in form.item_cost_qty" :key="k">
-                                            <td><input type="text" class="form-control part" v-model="item.part"
-                                                       placeholder="Part"></td>
+                                            <td><select name="part" class="form-control" v-model="item.part">
+                                                <option selected disabled>Select Part</option>
+                                                <option :value="part.id" v-for="part in parts" :key="part.id">
+                                                    {{part.code}} - {{part.description}}
+                                                </option>
+                                            </select>
+                                            </td>
                                             <td><input type="number" class="form-control qty" v-model="item.quantity"
-                                                       placeholder="Qty"></td>
-                                            <td><input type="number" class="form-control cost" v-model="item.cost"
-                                                       placeholder="Cost"></td>
+                                                       placeholder="Qty">
+                                            </td>
                                             <td>
                                                 <i class="fa fa-minus-circle remove" @click="removeparts(k)"
                                                    v-show="k || ( !k && form.item_cost_qty.length > 1)"></i>
@@ -79,19 +83,27 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="form-group">
-                                    <label>Labour</label>
-                                    <input type="text" class="form-control" v-model="form.labour">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Labour</label>
+                                            <input type="text" class="form-control" v-model="form.labour">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Labour Cost</label>
+                                            <input type="number" step="0.001" class="form-control" v-model="form.cost">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Labour Cost</label>
-                                    <input type="number" step="0.001" class="form-control" v-model="form.cost">
-                                </div>
+
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group" v-if="!serviceType">
                                     <label>Service Type</label>
-                                    <select name="service_type_id" class="form-control" v-model="form.service_type_id" @change="nextReadings()">
+                                    <select name="service_type_id" class="form-control" v-model="form.service_type_id"
+                                            @change="nextReadings()">
                                         <option :value="service.id" v-for="service in service_types" :key="service.id">
                                             {{service.name}}
                                         </option>
@@ -113,12 +125,15 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <label>Assigned To: </label> {{driver}}
+                                    <label>Actual Completion Date</label>
+                                    <datepicker v-model="form.completion_date" ref="completionDate"
+                                                required></datepicker>
                                 </div>
                                 <div class="form-group">
-                                    <label>Description</label>
-                                    <textarea name="description" cols="5" rows="3" class="form-control"
-                                              v-model="form.description"></textarea>
+                                    <label>Time Out</label>
+                                    <input type="text" v-model="form.time_out" class="form-control time_out"
+                                           ref="timeOut"
+                                           required>
                                 </div>
                                 <div class="form-group">
                                     <label>Upload Checklist</label>
@@ -131,13 +146,7 @@
 
                                 </div>
                                 <div class="form-group">
-                                    <label>Actual Completion Date</label>
-                                    <datepicker v-model="form.completion_date" required></datepicker>
-                                </div>
-                                <div class="form-group">
-                                    <label>Time Out</label>
-                                    <input type="text" v-model="form.time_out" class="form-control time_out"
-                                           required>
+                                    <label>Assigned To: </label> {{driver}}
                                 </div>
                                 <div class="form-group">
                                     <label>Fuel Balance</label>
@@ -160,11 +169,48 @@
                                 </div>
                                 <div class="form-group" v-if="show_track_by">
                                     <label>Next {{track_name}} Maintenance</label>
-                                    <input type="number" step="0.001" class="form-control" v-model="form.next_readings" required :disabled="!show_next_readings">
+                                    <input type="number" step="0.001" class="form-control" v-model="form.next_readings"
+                                           required :disabled="!show_next_readings">
                                 </div>
                                 <div class="form-group">
                                     <label>Next Service Date</label>
-                                    <datepicker v-model="form.next_service_date" required></datepicker>
+                                    <datepicker v-model="form.next_service_date" ref="nextServiceDate"
+                                                required></datepicker>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Maintenance</label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        <tr v-for="(m,i) in form.maintenance">
+                                            <td><select class="form-control" v-model="m.category"
+                                                        placeholder="Category">
+                                                <option selected disabled>Select Category</option>
+                                                <option :value="cat.id" v-for="cat in categories" :key="cat.id">
+                                                    {{cat.name}}
+                                                </option>
+                                            </select></td>
+
+                                            <td><textarea class="form-control cost" v-model="m.description"
+                                                          placeholder="Description"></textarea></td>
+                                            <td><textarea class="form-control cause" v-model="m.root_cause"
+                                                          placeholder="Root cause"></textarea></td>
+                                            <td>
+                                                <i class="fa fa-minus-circle remove" @click="removeItem(i)"
+                                                   v-show="i || (!i && form.maintenance.length > 1)"></i>
+                                                <i class="fa fa-plus-circle add" @click="addItem(i)"
+                                                   v-show="i == form.maintenance.length -1"></i>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +224,7 @@
 </template>
 <script>
     import datepicker from 'vuejs-datepicker';
+
     export default {
         props: ['edit'],
         data() {
@@ -204,8 +251,9 @@
                     cost: '',
                     id: '',
                     item_cost_qty: [
-                        {part: '', cost: '', quantity: ''}
+                        {part: '', quantity: ''}
                     ],
+                    maintenance: [{category: '', description: '', root_cause: ''}]
                 },
                 checklist: '',
                 edit_jobcard: this.edit,
@@ -227,22 +275,47 @@
                 actual_readings: 0,
                 service_after: 0,
                 service_type: 'repair',
-                internal_suppliers:{},
-                next_computed_readings:0,
-                show_next_readings:true
+                internal_suppliers: {},
+                next_computed_readings: 0,
+                show_next_readings: true,
+                parts: {},
+                categories: {}
+
             }
         },
-        watch:{
-            'form.current_readings'(){
-                    if (this.service_type ==='maintenance' && this.service_after > 0){
+        watch: {
+            'form.current_readings'() {
+                if (this.service_type === 'maintenance' && this.service_after > 0) {
                     this.form.next_readings = parseFloat(this.form.current_readings) + parseFloat(this.service_after);
                     this.show_next_readings = false;
-                   }else {
-                        this.show_next_readings = true;
+                } else {
+                    this.show_next_readings = true;
+                }
+            },
+            timeframe() {
+                if (this.form.actual_date !== '' && this.form.completion_date !== '') {
+                    if (moment(this.form.actual_date).format('YYYY-MM-DD') > moment(this.form.completion_date).format('YYYY-MM-DD')) {
+                        this.$refs.completionDate.clearDate();
+                        this.form.completion_date = '';
+                        return this.$toastr.e('Sorry, actual date cannot be greater than completion date.');
                     }
+                }
+                if (moment(this.form.next_service_date).format('YYYY-MM-DD') < moment(Date.now()).format('YYYY-MM-DD')) {
+                    this.$refs.nextServiceDate.clearDate();
+                    this.form.next_service_date = '';
+                    return this.$toastr.e('Sorry, next service date cannot be later than today.');
+                }
+                if (this.form.actual_date !== '' && this.form.completion_date !== '' && this.form.time_in !== '' || this.form.time_out !== '') {
+                    if (moment(this.form.actual_date).format('YYYY-MM-DD') === moment(this.form.completion_date).format('YYYY-MM-DD')) {
+                        if (moment(this.form.time_in, 'h:mm A').format('HH:mm') > moment(this.form.time_out, 'h:mm A').format('HH:mm')) {
+                            this.form.time_out = '';
+                            return this.$toastr.e('Sorry, time in cannot be greater than time out.');
+                        }
+                    }
+                }
             }
         },
-        mounted(){
+        mounted() {
             this.initDate();
         },
         created() {
@@ -255,6 +328,8 @@
             this.getInternalSuppliers();
             this.getServiceTypes();
             this.getBalances();
+            this.getParts();
+            this.getCategories();
 
         },
         filters: {
@@ -270,20 +345,41 @@
             },
             serviceType() {
                 return this.service_type === 'repair';
+            },
+            timeframe() {
+                return [this.form.actual_date, this.form.time_in, this.form.completion_date, this.form.time_out, this.form.next_service_date].join();
             }
         },
         methods: {
-            nextReadings(){
-           if (this.service_type === 'maintenance'){
-             this.services.forEach(service => {
-                 if (service.id === this.form.service_type_id){
-                     this.service_after = service.service_after;
-                 }
-             })
-           }else {
-               this.form.service_type_id === '';
-               this.service_after = 0;
-           }
+            addItem(i) {
+                this.form.maintenance.push({category: '', description: '', root_cause: ''});
+            },
+            removeItem(i) {
+                this.form.maintenance.splice(i, 1);
+            },
+            getCategories() {
+                axios.get('categories')
+                    .then(category => {
+                        this.categories = category.data
+                    })
+            },
+            getParts() {
+                axios.get('parts')
+                    .then(res => {
+                        this.parts = res.data
+                    })
+            },
+            nextReadings() {
+                if (this.service_type === 'maintenance') {
+                    this.services.forEach(service => {
+                        if (service.id === this.form.service_type_id) {
+                            this.service_after = service.service_after;
+                        }
+                    })
+                } else {
+                    this.form.service_type_id === '';
+                    this.service_after = 0;
+                }
             },
             initDate() {
                 var vm = this;
@@ -309,8 +405,7 @@
                 reader.readAsDataURL(file);
             },
             addparts() {
-                this.form.item_cost_qty.push({part: '', cost: '', quantity: ''});
-                console.log(this.form.item_cost_qty)
+                this.form.item_cost_qty.push({part: '', quantity: ''});
             },
             removeparts(i) {
                 this.form.item_cost_qty.splice(i, 1);
@@ -343,7 +438,7 @@
                         this.users.forEach(user => {
                             if (user.id === machine.assign_to) {
                                 this.driver = user.name;
-                                  return;
+                                return;
                             }
                         })
                         this.service_types = machine.service_types
@@ -352,16 +447,6 @@
                 })
             },
             saveJobcard() {
-                if (moment(this.form.actual_date).format('YYYY-MM-DD') > moment(this.form.completion_date).format('YYYY-MM-DD')) {
-                    return this.$toastr.e('Sorry, actual date cannot be greater than completion date.');
-                } else if (moment(this.form.next_service_date).format('YYYY-MM-DD') < moment(Date.now()).format('YYYY-MM-DD')) {
-                    return this.$toastr.e('Sorry, next service date cannot be later than today.');
-                }
-                if (moment(this.form.actual_date).format('YYYY-MM-DD') === moment(this.form.completion_date).format('YYYY-MM-DD')) {
-                    if (moment(this.form.time_in,'h:mm A').format('HH:mm') > moment(this.form.time_out,'h:mm A').format('HH:mm')) {
-                        return this.$toastr.e('Sorry, time in cannot be greater than time out.');
-                    }
-                }
                 this.machines.forEach(machine => {
                     if (machine.id === this.form.machine_id) {
                         if (machine.next_readings > this.form.next_readings) {
@@ -376,18 +461,34 @@
                 if (parseFloat(this.form.current_readings) > parseFloat(this.form.next_readings)) {
                     return this.$toastr.e(`Sorry, Current ${this.track_name} readings cannot be greater than next readings.`);
                 }
-                if (Object.values(this.form.item_cost_qty[0])[0] !== '' || Object.values(this.form.item_cost_qty[0])[1] !== '' || Object.values(this.form.item_cost_qty[0])[2] !== ''){
-                    this.form.item_cost_qty.forEach((val, key) => {
-                        if (val.part === '' || val.cost === '' || val.quantity === '') {
+                if (Object.values(this.form.item_cost_qty[0])[0] !== '' || Object.values(this.form.item_cost_qty[0])[1] !== '') {
+                    for (let i = 0; i < this.form.item_cost_qty.length; i++) {
+                        if (this.form.item_cost_qty[i]['part'] === '' || this.form.item_cost_qty[i]['quantity'] === '') {
                             return this.$toastr.e('Please all expenses fields are required.');
                         }
-                    });
+                    }
+                    ;
                 }
-                if (this.form.service_provider_id ==='' && this.form.supplier_id ===''){
+                if (Object.values(this.form.maintenance[0])[0] !== '' || Object.values(this.form.maintenance[0])[1] !== '' || Object.values(this.form.maintenance[0])[2] !== '') {
+                    for (let i = 0; i < this.form.maintenance.length; i++) {
+                        if (this.form.maintenance[i]['category'] === '' || this.form.maintenance[i]['description'] === '' || this.form.maintenance[i]['root_cause'] === '') {
+                            return this.$toastr.e('Please all Maintenance fields are required.');
+                        }
+                    }
+                    ;
+                }
+                if (this.form.service_provider_id === '' && this.form.supplier_id === '') {
                     return this.$toastr.e('Service provider field is required');
                 }
-
-               this.edit_jobcard ? this.update() : this.save();
+                if (this.form.time_out === '') {
+                    return this.$toastr.e('Time Out field is required');
+                }
+                if (this.form.next_service_date === '' || this.form.completion_date === '') {
+                    return this.$toastr.e('Actual completion and Next service dates are required.');
+                }
+                console.log('pass here')
+                return console.log(this.form);
+                this.edit_jobcard ? this.update() : this.save();
 
             },
             save() {
@@ -416,7 +517,7 @@
                 }
                 delete this.form.id;
                 axios.post('job-card', formData, config).then(res => {
-                 eventBus.$emit('listJobcards', res.data)
+                    eventBus.$emit('listJobcards', res.data)
                 })
                     .catch(error => error.response)
             },
@@ -481,11 +582,11 @@
                 axios.get('service-providers')
                     .then(suppliers => {
                         this.suppliers = suppliers.data;
-                     })
+                    })
             },
-            getInternalSuppliers(){
+            getInternalSuppliers() {
                 axios.get('fuel-supplier')
-                    .then(supplier =>{
+                    .then(supplier => {
                         this.internal_suppliers = supplier.data;
                     })
             },
@@ -505,7 +606,7 @@
                 axios.get('users')
                     .then(users => {
                         this.users = users.data;
-                           })
+                    })
             },
             cancel() {
                 eventBus.$emit('cancel')
@@ -520,18 +621,18 @@
                     this.make = this.$store.state.job_card.make;
                     this.driver = this.$store.state.job_card.driver;
                     this.service_types = this.form.service_types;
-                      this.form.item_cost_qty = JSON.parse(this.$store.state.job_card.item_cost_qty);
-                        if (this.$store.state.job_card.service_provider_id===null || this.$store.state.job_card.service_provider_id==='null') {
-                         this.internal = true;
-                          } else {
-                          this.external = true;
-                            }
-                        console.log(this.form)
+                    this.form.item_cost_qty = JSON.parse(this.$store.state.job_card.item_cost_qty);
+                    if (this.$store.state.job_card.service_provider_id === null || this.$store.state.job_card.service_provider_id === 'null') {
+                        this.internal = true;
+                    } else {
+                        this.external = true;
                     }
-               },
+                    console.log(this.form)
+                }
+            },
         },
         components: {
-              datepicker
+            datepicker
         }
     }
 </script>
@@ -553,6 +654,11 @@
 
     .remove, .add {
         margin-left: 20px
+    }
+
+    .cause {
+        margin-left: 15px;
+        margin-bottom: 10px;
     }
 
     .vdp-datepicker input {

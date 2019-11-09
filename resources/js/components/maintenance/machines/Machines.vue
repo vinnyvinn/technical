@@ -44,30 +44,49 @@
                                     <label>Insurance scanned copy</label>
                                     <input type="file" class="form-control" @change="onFileChange">
                                 </div>
+                                <div class="row" v-if="show_file">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Start Date</label>
+                                            <datepicker v-model="form.start_date"></datepicker>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Expiry Date</label>
+                                            <datepicker v-model="form.expiry_date" ref="myDatepicker"></datepicker>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label>Track By</label>
                                     <select name="track_by_id" id="track_by_id" v-model="form.track_by_id"
-                                            class="form-control" @change="trackValue()">
+                                            class="form-control" @change="trackValue()" required>
                                         <option :value="track.id" v-for="track in tracks" :key="track.id">
                                             {{track.name}}
                                         </option>
                                     </select>
                                 </div>
-
-                                <div class="form-group" v-if="selected_next_maintenance">
-                                    <label>Next {{track_type}} Maintenance</label>
-                                    <input type="number" step="0.001" class="form-control" v-model="form.next_readings"
-                                           required>
-                                </div>
-                                <div class="form-group" v-if="selected_next_maintenance">
-                                    <label>Remind before (No. of {{track_type}})</label>
-                                    <input type="number" class="form-control" v-model="form.reminder_before"
-                                           required>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group" v-if="selected_next_maintenance">
+                                            <label>Next {{track_type}} Maintenance</label>
+                                            <input type="number" step="0.001" class="form-control" v-model="form.next_readings"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group" v-if="selected_next_maintenance">
+                                            <label>Remind before (No. of {{track_type}})</label>
+                                            <input type="number" class="form-control" v-model="form.reminder_before"
+                                                   required>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>make</label>
+                                    <label>Make</label>
                                     <input type="text" class="form-control" v-model="form.make" required>
                                 </div>
                                 <div class="form-group">
@@ -130,12 +149,13 @@
                     warranty: '',
                     status: '',
                     insurance_file: '',
+                    start_date: '',
+                    expiry_date: '',
                     reminder_before:'',
                     service_type_id:[],
                     id: ''
                 },
                 value:[],
-                options: ['list', 'of', 'options'],
                 selected: null,
                 selected_next_maintenance: false,
                 track_type: '',
@@ -146,12 +166,39 @@
                 service_types:[]
             }
         },
+
             created() {
             this.listen();
             this.getTracks();
             this.getUsers();
             this.getServiceTypes();
         },
+        watch:{
+            insurance(){
+               if (this.form.start_date !=='' && this.form.expiry_date !==''){
+                   if (this.convertDate(this.form.start_date) > this.convertDate(this.form.expiry_date)){
+                      this.$refs.myDatepicker.clearDate();
+                      this.$toastr.e('Start date cannot be greater than Expiry date')
+                   };
+               }
+            },
+            readings(){
+                    if (this.form.next_readings !=='' && this.form.reminder_before !==''){
+                    if (parseInt(this.form.next_readings) < parseInt(this.form.reminder_before)){
+                        this.form.reminder_before = '';
+                        return this.$toastr.e('Reminder before readings cannot be greater next readings');
+                    }
+                };
+            },
+        },
+    computed:{
+            insurance(){
+                 return [this.form.start_date,this.form.expiry_date].join();
+            },
+        readings(){
+            return [this.form.next_readings,this.form.reminder_before].join();
+        },
+    },
         methods: {
             customLabel (option) {
                 return `${option.name}`
@@ -162,8 +209,7 @@
                services.push(val.id);
            });
             this.form.service_type_id = services;
-           console.log(this.form.service_type_id);
-            },
+               },
 
             getServiceTypes(){
                 axios.get('service-types')
@@ -189,15 +235,20 @@
                this.form.status == 1 ? this.show_file = true : this.show_file = false;
             },
             saveMachine() {
-                if (parseInt(this.form.next_readings) < parseInt(this.form.reminder_before)){
-                    return this.$toastr.e('Reminder before readings cannot be greater next readings');
+                if (this.form.status ==1){
+                    console.log('walla')
+                    if ((this.form.start_date ===null || this.form.start_date ==='') || (this.form.expiry_date ===null || this.form.expiry_date ==='') || (this.form.insurance_file ==='' || this.form.insurance_file ===null)){
+                        return this.$toastr.e('Ensure You have entered Start date, Expiry date and Insurance file.');
+                    }
                 }
-                this.edit_machine ? this.update() : this.save();
+               this.edit_machine ? this.update() : this.save();
             },
             save() {
                 let form = document.getElementById('asset');
                 let formData = new FormData(form);
                 formData.append('insurance_file', this.form.insurance_file);
+                formData.append('start_date', this.convertDate(this.form.start_date));
+                formData.append('expiry_date', this.convertDate(this.form.expiry_date));
                 formData.append('code', this.form.code);
                 formData.append('description', this.form.description);
                 formData.append('make', this.form.make);
@@ -226,6 +277,8 @@
                 let form = document.getElementById('asset');
                 let formData = new FormData(form);
                 formData.append('insurance_file', this.form.insurance_file);
+                formData.append('start_date', this.convertDate(this.form.start_date));
+                formData.append('expiry_date', this.convertDate(this.form.expiry_date));
                 formData.append('code', this.form.code);
                 formData.append('description', this.form.description);
                 formData.append('make', this.form.make);
@@ -246,7 +299,6 @@
                 }
                 axios.post(`machines/${this.form.id}`, formData,config)
                     .then(res => {
-                        console.log(res.data);
                         this.edit_machine = false;
                         eventBus.$emit('updateMachine', res.data);
                     })
@@ -289,7 +341,10 @@
                     this.form = this.$store.state.machine,
                     this.$store.state.machine.status === 1 ? this.show_file = true :'';
                     this.selected_next_maintenance = true;
-                    this.track_type = this.$store.state.machine.track_name
+                    this.track_type = this.$store.state.machine.track_name;
+                    if (this.form.status ==1){
+                        this.show_file = true;
+                    }
                 }
             }
         },
