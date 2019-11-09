@@ -35,7 +35,7 @@ class CreateJobcardsTable extends Migration
             $table->string('service_type_description')->nullable();
             $table->time('time_in');
             $table->time('time_out');
-            $table->string('description');
+            $table->text('maintenance')->nullable();
             $table->string('card_no')->nullable();
             $table->timestamps();
         });

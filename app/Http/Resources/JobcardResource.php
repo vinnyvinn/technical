@@ -36,7 +36,7 @@ class JobcardResource extends JsonResource
             'service_type_description' => $this->service_type_description,
             'time_in' => $this->time_in,
             'time_out' => $this->time_out,
-            'description' => $this->description,
+            'maintenance' => $this->maintenance,
             'card_no' => $this->card_no,
             'driver' => $this->machine->user->name,
             'supplier' =>  $this->internal_supplier ? $this->internal_supplier->name: $this->external_supplier->name,

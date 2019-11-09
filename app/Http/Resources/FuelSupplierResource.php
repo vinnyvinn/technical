@@ -21,7 +21,8 @@ class FuelSupplierResource extends JsonResource
             'phone_no' => $this->phone_no,
             'price' => $this->price,
             'fuel_type_id' => $this->fuel_type_id,
-            'fuel_type' => $this->fueltype->name
+            'fuel_type' => $this->fueltype->name,
+            'currency' => $this->currency
         ];
     }
 }

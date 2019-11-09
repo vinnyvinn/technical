@@ -49,6 +49,18 @@ Vue.use(VueTimepicker)
 import User from './helpers/User';
 window.User = User;
 
+Vue.filter('currency', function(value) {
+    let formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'KES',
+        minimumFractionDigits: 0
+    });
+
+    return formatter.format(value);
+});
+Vue.filter('number', function(value) {
+     return new Intl.NumberFormat().format(value)
+});
 
 import Exception from "./helpers/Exception";
 window.Exception = Exception;

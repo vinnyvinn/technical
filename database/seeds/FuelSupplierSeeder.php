@@ -17,6 +17,7 @@ class FuelSupplierSeeder extends Seeder
             'phone_no' => '0705678999',
             'price' => 500,
             'fuel_type_id' => \App\FuelType::all()->random()->id,
+            'currency' => 'KSH'
         ]);
         \App\FuelSupplier::create([
             'name' => 'Kebab LTD',
@@ -24,6 +25,7 @@ class FuelSupplierSeeder extends Seeder
             'phone_no' => '0783838300',
             'price' => 250,
             'fuel_type_id' => \App\FuelType::all()->random()->id,
+            'currency' => 'USD'
         ]);
         \App\FuelSupplier::create([
             'name' => 'Vinnyvinny Associates LTD',
@@ -31,6 +33,7 @@ class FuelSupplierSeeder extends Seeder
             'phone_no' => '0704522671',
             'price' => 650,
             'fuel_type_id' => \App\FuelType::all()->random()->id,
+            'currency' => 'KSH'
         ]);
     }
 }

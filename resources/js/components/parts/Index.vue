@@ -62,7 +62,6 @@
                 this.importing = true;
                 axios.get('import-parts')
                     .then(res =>{
-                        console.log(res.data)
                        this.initDatable();
                        this.importing = false;
                        this.getParts();

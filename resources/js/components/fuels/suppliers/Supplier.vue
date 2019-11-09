@@ -31,7 +31,13 @@
                             <label>Price</label>
                             <input type="number" step="0.001" class="form-control" v-model="form.price" required>
                         </div>
-
+                        <div class="form-group">
+                            <label>Currency</label>
+                            <select name="currency" class="form-control" required v-model="form.currency">
+                                <option value="KSH">KSH</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
                         <button type="submit" class="btn btn-primary">{{edit_supplier ? 'Update' : 'Save'}}</button>
                         <button type="button" class="btn btn-outline-danger" @click="cancel">Cancel</button>
                     </form>
@@ -53,6 +59,7 @@
                     phone_no:'',
                     price:'',
                     fuel_type_id:'',
+                    currency:'',
                     id:''
                 },
                 edit_supplier: this.edit,

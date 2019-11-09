@@ -20,7 +20,6 @@ class JobcardController extends Controller
     {
         return response()->json(JobcardResource::collection(Jobcard::all()));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -29,14 +28,6 @@ class JobcardController extends Controller
      */
     public function store(Request $request)
     {
-
-        $name = '';
-        if ($request->get('checklist_file')) {
-            $image = $request->get('checklist_file');
-            $name = time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-            \Image::make($request->get('checklist_file'))->save(public_path('uploads/') . $name);
-        }
-        $request['checklist_file'] = $name;
         $request['time_in'] = Carbon::parse($request->time_in)->format('H:i');
         $request['time_out'] = Carbon::parse($request->time_out)->format('H:i');
         $jobcard = Jobcard::create($request->all());
@@ -47,6 +38,13 @@ class JobcardController extends Controller
             'next_service_date' => $request->get('next_service_date'),
             'fuel_balance_id' => $request->get('fuel_balance_id'),
         ]);
+        if ($request->get('checklist_file')) {
+            $image = $request->get('checklist_file');
+            $name = time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('checklist_file'))->save(public_path('uploads/') . $name);
+            $jobcard->checklist_file = $name;
+            $jobcard->save();
+        }
         return response()->json(new JobcardResource($jobcard));
     }
 
@@ -60,18 +58,6 @@ class JobcardController extends Controller
     {
         return response()->json(new JobcardResource(Jobcard::find($id)));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -81,23 +67,24 @@ class JobcardController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $name = '';
-        if ($request->get('checklist_file') && $request->get('checklist_file') != 'undefined' && strlen($request->get('checklist_file')) > 50) {
-            $image = $request->get('checklist_file');
-            $name = time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-            \Image::make($request->get('checklist_file'))->save(public_path('uploads/') . $name);
-        }
-        $name ? $request['checklist_file'] = $name : '';
         $request['time_in'] = Carbon::parse($request->time_in)->format('H:i');
         $request['time_out'] = Carbon::parse($request->time_out)->format('H:i');
         $request['card_no'] = substr('ESL-' . $id . '-' . Machine::find($request->machine_id)->code, 0, 20);
-        Jobcard::find($id)->update($request->except('service_types'));
+        $jobcard = Jobcard::find($id);
+        $jobcard->update($request->except('service_types'));
         Machine::find($request->machine_id)->update([
             'current_readings' => $request->get('current_readings'),
             'next_readings' => $request->get('next_readings'),
             'next_service_date' => $request->get('next_service_date'),
             'fuel_balance_id' => $request->get('fuel_balance_id'),
         ]);
+        if ($request->get('checklist_file') && $request->get('checklist_file') != 'undefined' && strlen($request->get('checklist_file')) > 50) {
+            $image = $request->get('checklist_file');
+            $name = time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('checklist_file'))->save(public_path('uploads/') . $name);
+            $jobcard->checklist_file = $name;
+            $jobcard->save();
+        }
         return response()->json(new JobcardResource(Jobcard::find($id)));
     }
 

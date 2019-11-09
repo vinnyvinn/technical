@@ -20,6 +20,7 @@ class CreateFuelSuppliersTable extends Migration
             $table->string('phone_no');
             $table->string('fuel_type_id');
             $table->float('price');
+            $table->string('currency');
             $table->timestamps();
         });
     }

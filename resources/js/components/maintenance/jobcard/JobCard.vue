@@ -15,7 +15,7 @@
                                     <label class="radio-inline"><input type="radio" name="service_type" value="repair"
                                                                        v-model="service_type">Repairs</label>
                                     <label class="radio-inline"><input type="radio" name="service_type"
-                                                                       value="maintenance" v-model="service_type">Maintenance</label>
+                                                                      value="maintenance" v-model="service_type">Maintenance</label>
                                 </div>
                                 <div class="form-group">
                                     <label>Vehicle/Chasis #</label>
@@ -64,7 +64,7 @@
                                             <th></th>
                                         </tr>
                                         <tr v-for="(item,k) in form.item_cost_qty" :key="k">
-                                            <td><select name="part" class="form-control" v-model="item.part">
+                                            <td><select class="form-control" v-model="item.part">
                                                 <option selected disabled>Select Part</option>
                                                 <option :value="part.id" v-for="part in parts" :key="part.id">
                                                     {{part.code}} - {{part.description}}
@@ -224,7 +224,6 @@
 </template>
 <script>
     import datepicker from 'vuejs-datepicker';
-
     export default {
         props: ['edit'],
         data() {
@@ -467,7 +466,6 @@
                             return this.$toastr.e('Please all expenses fields are required.');
                         }
                     }
-                    ;
                 }
                 if (Object.values(this.form.maintenance[0])[0] !== '' || Object.values(this.form.maintenance[0])[1] !== '' || Object.values(this.form.maintenance[0])[2] !== '') {
                     for (let i = 0; i < this.form.maintenance.length; i++) {
@@ -475,7 +473,6 @@
                             return this.$toastr.e('Please all Maintenance fields are required.');
                         }
                     }
-                    ;
                 }
                 if (this.form.service_provider_id === '' && this.form.supplier_id === '') {
                     return this.$toastr.e('Service provider field is required');
@@ -486,8 +483,9 @@
                 if (this.form.next_service_date === '' || this.form.completion_date === '') {
                     return this.$toastr.e('Actual completion and Next service dates are required.');
                 }
-                console.log('pass here')
-                return console.log(this.form);
+                if (this.form.service_type_description === '' && this.form.service_type_id === '') {
+                    return this.$toastr.e('Service type/description is required.');
+                }
                 this.edit_jobcard ? this.update() : this.save();
 
             },
@@ -512,11 +510,13 @@
                 formData.append('service_type', this.service_type);
                 formData.append('fuel_balance_id', this.form.fuel_balance_id);
                 formData.append('item_cost_qty', JSON.stringify(this.form.item_cost_qty));
+                formData.append('maintenance', JSON.stringify(this.form.maintenance));
                 const config = {
                     headers: {'Content-Type': 'multipart/form-data'}
                 }
                 delete this.form.id;
                 axios.post('job-card', formData, config).then(res => {
+                    //console.log(res.data);
                     eventBus.$emit('listJobcards', res.data)
                 })
                     .catch(error => error.response)
@@ -549,6 +549,7 @@
                 formData.append('service_type', this.service_type);
                 formData.append('fuel_balance_id', this.form.fuel_balance_id);
                 formData.append('item_cost_qty', JSON.stringify(this.form.item_cost_qty));
+                formData.append('maintenance', JSON.stringify(this.form.maintenance));
                 formData.append('_method', 'PUT');
                 const config = {
                     headers: {'Content-Type': 'multipart/form-data'}
@@ -622,6 +623,7 @@
                     this.driver = this.$store.state.job_card.driver;
                     this.service_types = this.form.service_types;
                     this.form.item_cost_qty = JSON.parse(this.$store.state.job_card.item_cost_qty);
+                    this.form.maintenance = JSON.parse(this.$store.state.job_card.maintenance);
                     if (this.$store.state.job_card.service_provider_id === null || this.$store.state.job_card.service_provider_id === 'null') {
                         this.internal = true;
                     } else {

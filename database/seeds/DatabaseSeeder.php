@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
          $this->call(FuelTypeSeeder::class);
          $this->call(FuelSupplierSeeder::class);
          $this->call(ExpiryDateSeeder::class);
+         $this->call(CategorySeeder::class);
 
 
     }
