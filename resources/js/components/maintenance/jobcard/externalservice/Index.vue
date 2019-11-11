@@ -89,6 +89,7 @@
                     this.add_external = false;
                     this.editing = false;
                     this.initDatable();
+                    this.getServices();
                 });
                 eventBus.$on('updateExternalService',(service)=>{
                     this.add_external = false;
@@ -100,6 +101,7 @@
                     }
                     this.tableData.unshift(service);
                     this.initDatable();
+                    this.getServices();
                 });
             },
             initDatable(){

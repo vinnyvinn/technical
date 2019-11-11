@@ -247,8 +247,8 @@
                 let form = document.getElementById('asset');
                 let formData = new FormData(form);
                 formData.append('insurance_file', this.form.insurance_file);
-                formData.append('start_date', this.convertDate(this.form.start_date));
-                formData.append('expiry_date', this.convertDate(this.form.expiry_date));
+                formData.append('start_date', (this.form.start_date !=='' && this.form.start_date !==null) ? this.convertDate(this.form.start_date) :'');
+                formData.append('expiry_date',(this.form.expiry_date !=='' && this.form.expiry_date !==null) ? this.convertDate(this.form.expiry_date) :'');
                 formData.append('code', this.form.code);
                 formData.append('description', this.form.description);
                 formData.append('make', this.form.make);
@@ -260,8 +260,8 @@
                 formData.append('assign_to', this.form.assign_to);
                 formData.append('next_readings', this.form.next_readings);
                 formData.append('reminder_before', this.form.reminder_before);
-                formData.append('warranty', this.convertDate(this.form.warranty));
-                formData.append('service_type_id', JSON.stringify(this.form.service_type_id));
+                formData.append('warranty', this.form.warranty !=='' ? this.convertDate(this.form.warranty) : '');
+                formData.append('service_type_id', (this.form.service_type_id !=='' && this.form.service_type_id !==null) ? JSON.stringify(this.form.service_type_id) :'');
                 formData.append('status', this.form.status);
                 const config = {
                     headers: {'Content-Type': 'multipart/form-data'}
@@ -277,8 +277,8 @@
                 let form = document.getElementById('asset');
                 let formData = new FormData(form);
                 formData.append('insurance_file', this.form.insurance_file);
-                formData.append('start_date', this.convertDate(this.form.start_date));
-                formData.append('expiry_date', this.convertDate(this.form.expiry_date));
+                formData.append('start_date', (this.form.start_date !=='' && this.form.start_date !==null) ? this.convertDate(this.form.start_date) :'');
+                formData.append('expiry_date',(this.form.expiry_date !=='' && this.form.expiry_date !==null) ? this.convertDate(this.form.expiry_date) :'');
                 formData.append('code', this.form.code);
                 formData.append('description', this.form.description);
                 formData.append('make', this.form.make);
@@ -290,8 +290,8 @@
                 formData.append('assign_to', this.form.assign_to);
                 formData.append('reminder_before', this.form.reminder_before);
                 formData.append('next_readings', this.form.next_readings);
-                formData.append('warranty', this.convertDate(this.form.warranty));
-                formData.append('service_type_id', JSON.stringify(this.form.service_type_id));
+                formData.append('warranty', (this.form.warranty !=='' && this.form.warranty !==null) ? this.convertDate(this.form.warranty) :'');
+                formData.append('service_type_id', (this.form.service_type_id !=='' && this.form.service_type_id !=='undefined') ? JSON.stringify(this.form.service_type_id) :'');
                 formData.append('status', this.form.status);
                 formData.append('_method', 'PUT');
                 const config = {
@@ -299,8 +299,9 @@
                 }
                 axios.post(`machines/${this.form.id}`, formData,config)
                     .then(res => {
-                        this.edit_machine = false;
-                        eventBus.$emit('updateMachine', res.data);
+                        //console.log(res.data);
+                       this.edit_machine = false;
+                       eventBus.$emit('updateMachine', res.data);
                     })
                     .catch(error => error.response)
             },

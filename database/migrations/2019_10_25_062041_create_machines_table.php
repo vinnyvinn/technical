@@ -15,7 +15,7 @@ class CreateMachinesTable extends Migration
     {
         Schema::create('machines', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('asset_no');
+            $table->integer('asset_no')->nullable();
             $table->string('code');
             $table->string('description');
             $table->string('make')->nullable();

@@ -26,6 +26,8 @@ class ExternalServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $request['labours'] = json_encode($request->get('labours'));
+        $request['parts'] =  json_encode($request->get('parts'));
         $service = ExternalService::create($request->all());
         return response()->json(new ExternalServiceResource($service));
     }
@@ -49,6 +51,8 @@ class ExternalServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request['labours'] = json_encode($request->get('labours'));
+        $request['parts'] = json_encode($request->get('parts'));
         ExternalService::find($id)->update($request->except(['job_card','vehicle','make','supplier']));
         return response()->json(new ExternalServiceResource(ExternalService::find($id)));
     }

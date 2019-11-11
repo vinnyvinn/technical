@@ -17,14 +17,10 @@ class CreateExternalServicesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('job_card_id');
             $table->integer('service_provider_id')->nullable();
-            $table->integer('supplier_id')->nullable();
             $table->string('service_type');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->string('description');
-            $table->string('item')->nullable();
-            $table->float('cost')->nullable();
-            $table->integer('quantity')->nullable();
+            $table->string('description')->nullable();
+            $table->text('labours')->nullable();
+            $table->text('parts')->nullable();
             $table->timestamps();
         });
     }

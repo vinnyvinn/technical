@@ -165,13 +165,13 @@
                                             <th></th>
                                         </tr>
                                         <tr v-for="(expense,k) in form.other_expenses" :key="k">
-                                            <td><select class="form-control" v-model="expense.name">
+                                            <td><select class="form-control pt" v-model="expense.name">
                                                 <option selected disabled>Select Part</option>
                                                 <option :value="part.id" v-for="part in parts" :key="part.id">
                                                     {{part.code}} - {{part.description}}
                                                 </option>
                                             </select></td>
-                                            <td><input type="number" v-model="expense.qty" class="form-control qty"
+                                            <td><input type="number" v-model="expense.qty" class="form-control qt"
                                                        placeholder="Qty"></td>
                                             <td>
                                                 <i class="fa fa-minus-circle remove" @click="removeExpense(k)"
@@ -461,5 +461,11 @@
 </script>
 
 <style scoped>
-
+.pt{
+   margin-bottom: 10px;
+}
+    .qt{
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
 </style>

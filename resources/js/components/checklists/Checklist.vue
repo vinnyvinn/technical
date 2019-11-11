@@ -35,15 +35,15 @@
                         </div>
                         <div class="form-group" v-if="check_list==0">
                             <label>Enter Checklist</label>
-                            <table>
+                            <table style="width: 100%">
                                 <tr>
                                     <th></th>
                                     <th></th>
                                     <th></th>
                                 </tr>
                                 <tr v-for="(checklist,k) in form.checklists">
-                                    <td><input type="text" class="form-control" placeholder="Action Name" v-model="checklist.name"></td>
-                                    <td><textarea class="form-control description" placeholder="Description" v-model="checklist.description"></textarea></td>
+                                    <td><input type="text" class="form-control action_name" placeholder="Action Name" v-model="checklist.name"></td>
+                                    <td><input type="text" class="form-control description" placeholder="Description" v-model="checklist.description"></td>
                                     <td>
                                         <i class="fa fa-minus-circle add" @click="removeChecklist(k)" v-show="k || (!k && form.checklists.length > 1)"></i>
                                         <i class="fa fa-plus-circle add" @click="addChecklist(k)" v-show="k == form.checklists.length-1"></i>
@@ -202,12 +202,15 @@
 
 <style scoped>
 .add{
-    margin-left: 25px;
+    margin-left: 20px;
     font-size: 18px;
 }
     .description{
-        margin-left: 20px;
-        margin-top: 15px;
+        margin-left: 10px;
+        margin-bottom: 10px;
 
+    }
+    .action_name{
+        margin-bottom: 10px;
     }
 </style>

@@ -33,19 +33,20 @@ class MachineController extends Controller
      */
     public function store(Request $request)
     {
-        $name = '';
+
+        $request['asset_no'] = Machine::count()+1;
+        $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
+        $m = Machine::create($request->except(['service_type_id','service_types']));
+        $m->service_types()->attach(json_decode($request->get('service_type_id')));
         if($request->get('insurance_file'))
         {
             $image = $request->get('insurance_file');
             $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
             \Image::make($request->get('insurance_file'))->save(public_path('uploads/').$name);
-
+            $m->insurance_file = $name;
+            $m->save();
         }
-        $request['insurance_file'] = $name;
-        $request['asset_no'] = Machine::count()+1;
-        $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
-        $m = Machine::create($request->except(['service_type_id','service_types']));
-        $m->service_types()->attach(json_decode($request->get('service_type_id')));
+
         return response()->json(new MachineResource($m));
     }
 
@@ -69,6 +70,7 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
+        return response()->json($request->all());
         $machine = Machine::find($id);
         $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
         $machine->update($request->except(['track_name','assign_to_id','service_type_id','service_types','insurance_file']));
