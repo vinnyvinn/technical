@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\JobcardResource;
+use App\Http\Resources\MaintenanceResource;
 use App\Jobcard;
 use App\Machine;
 use Carbon\Carbon;
@@ -56,7 +57,7 @@ class JobcardController extends Controller
      */
     public function show($id)
     {
-        return response()->json(new JobcardResource(Jobcard::find($id)));
+        return response()->json(new MaintenanceResource(Jobcard::find($id)));
     }
     /**
      * Update the specified resource in storage.
@@ -88,6 +89,11 @@ class JobcardController extends Controller
         return response()->json(new JobcardResource(Jobcard::find($id)));
     }
 
+    public function closeJobcard($id)
+    {
+        Jobcard::find($id)->update(['closed_at' => date('Y-m-d H:i'),'status' => 0]);
+        return response('closed');
+}
     /**
      * Remove the specified resource from storage.
      *

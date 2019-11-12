@@ -88,6 +88,7 @@
                     this.tableData.unshift(job);
                     this.add_jobcard =false;
                     this.initDatable();
+                    this.getJobs();
                 });
                 eventBus.$on('cancel',()=>{
                     this.add_jobcard = false;

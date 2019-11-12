@@ -70,7 +70,7 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return response()->json($request->all());
+
         $machine = Machine::find($id);
         $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
         $machine->update($request->except(['track_name','assign_to_id','service_type_id','service_types','insurance_file']));

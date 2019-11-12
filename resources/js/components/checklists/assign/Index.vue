@@ -27,7 +27,7 @@
                             <td>{{checklist.vehicle}}</td>
                             <td>{{checklist.checklist}}</td>
                             <td>{{checklist.start_date}}</td>
-                            <td>{{checklist.reminder_before}} {{checklist.date_type}}</td>
+                            <td>{{checklist.reminder_before}} days</td>
                             <td>
                                 <button class="btn btn-success btn-sm" @click="editChecklist(checklist)"><i class="fa fa-edit"></i></button>
                                 <button class="btn btn-danger btn-sm" @click="deleteChecklist(checklist.id)"><i class="fa fa-trash"></i></button>

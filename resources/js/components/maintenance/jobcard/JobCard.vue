@@ -199,10 +199,10 @@
                                                 </option>
                                             </select></td>
 
-                                            <td><textarea class="form-control cost" v-model="m.description"
-                                                          placeholder="Description"></textarea></td>
-                                            <td><textarea class="form-control cause" v-model="m.root_cause"
-                                                          placeholder="Root cause"></textarea></td>
+                                            <td><input type="text" class="form-control cost" v-model="m.description"
+                                                          placeholder="Description"></td>
+                                            <td><input type="text" class="form-control cause" v-model="m.root_cause"
+                                                          placeholder="Root cause"></td>
                                             <td>
                                                 <i class="fa fa-minus-circle remove" @click="removeItem(i)"
                                                    v-show="i || (!i && form.maintenance.length > 1)"></i>
@@ -214,8 +214,53 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">{{edit_jobcard ? 'Update' : 'Save'}}</button>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Repair / Service Required</label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+
+                                        </tr>
+                                        <tr v-for="(s,i) in form.service_required">
+                                            <td><select class="form-control" v-model="s.category"
+                                                        placeholder="Category">
+                                                <option selected disabled>Select Category</option>
+                                                <option :value="cat.id" v-for="cat in categories" :key="cat.id">
+                                                    {{cat.name}}
+                                                </option>
+                                            </select></td>
+                                            <td><select class="form-control s_part" v-model="s.part">
+                                                <option selected disabled>Select Part</option>
+                                                <option :value="part.id" v-for="part in parts" :key="part.id">
+                                                    {{part.code}} - {{part.description}}
+                                                </option>
+                                            </select>
+                                            </td>
+                                            <td><input type="number" class="form-control s_qty" v-model="s.qty"
+                                                       placeholder="Quantity"></td>
+                                            <td><input type="text" class="form-control s_descr" v-model="s.description"
+                                                       placeholder="Description"></td>
+
+                                            <td>
+                                                <i class="fa fa-minus-circle s_add" @click="removeService(i)"
+                                                   v-show="i || (!i && form.service_required.length > 1)"></i>
+                                                <i class="fa fa-plus-circle s_add" @click="addService(i)"
+                                                   v-show="i == form.service_required.length -1"></i>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" v-if="status ==1">{{edit_jobcard ? 'Update' : 'Save'}}</button>
                         <button type="button" class="btn btn-outline-danger" @click="cancel">Cancel</button>
+                        <button type="button" class="btn btn-warning" @click="close" v-if="edit_jobcard && status==1">Close Jobcard</button>
                     </form>
                 </div>
             </div>
@@ -249,10 +294,10 @@
                     labour: '',
                     cost: '',
                     id: '',
-                    item_cost_qty: [
-                        {part: '', quantity: ''}
-                    ],
-                    maintenance: [{category: '', description: '', root_cause: ''}]
+                    item_cost_qty:[{part: '', quantity: ''}],
+                    maintenance: [{category: '', description: '', root_cause: ''}],
+                    service_required:[{category:'',part:'',qty:'',description:''}]
+
                 },
                 checklist: '',
                 edit_jobcard: this.edit,
@@ -278,7 +323,8 @@
                 next_computed_readings: 0,
                 show_next_readings: true,
                 parts: {},
-                categories: {}
+                categories: {},
+                status:1,
 
             }
         },
@@ -350,6 +396,21 @@
             }
         },
         methods: {
+            addService(i){
+              this.form.service_required.push({category:'',part:'',qty:'',description:''});
+            },
+            removeService(i){
+              this.form.service_required.splice(i,1);
+            },
+            close(){
+              if(confirm('Do you really want to close?')){
+                  axios.post(`close-jobcard/${this.form.id}`)
+                      .then(res => {
+                          this.$toastr.s(`Jobcard ${this.$store.state.job_card.card_no} was successfully closed.`)
+                          eventBus.$emit('cancel');
+                      })
+              }
+            },
             addItem(i) {
                 this.form.maintenance.push({category: '', description: '', root_cause: ''});
             },
@@ -474,6 +535,13 @@
                         }
                     }
                 }
+                if (Object.values(this.form.service_required[0])[0] !== '' || Object.values(this.form.service_required[0])[1] !== '' || Object.values(this.form.service_required[0])[2] !== ''|| Object.values(this.form.service_required[0])[3] !== '') {
+                    for (let i = 0; i < this.form.service_required.length; i++) {
+                        if (this.form.service_required[i]['category'] === '' || this.form.service_required[i]['part'] === '' || this.form.service_required[i]['qty'] === ''|| this.form.service_required[i]['description'] === '') {
+                            return this.$toastr.e('Please all Repair/Service required fields are required.');
+                        }
+                    }
+                }
                 if (this.form.service_provider_id === '' && this.form.supplier_id === '') {
                     return this.$toastr.e('Service provider field is required');
                 }
@@ -486,6 +554,7 @@
                 if (this.form.service_type_description === '' && this.form.service_type_id === '') {
                     return this.$toastr.e('Service type/description is required.');
                 }
+
                 this.edit_jobcard ? this.update() : this.save();
 
             },
@@ -511,6 +580,7 @@
                 formData.append('fuel_balance_id', this.form.fuel_balance_id);
                 formData.append('item_cost_qty', JSON.stringify(this.form.item_cost_qty));
                 formData.append('maintenance', JSON.stringify(this.form.maintenance));
+                formData.append('service_required', JSON.stringify(this.form.service_required));
                 const config = {
                     headers: {'Content-Type': 'multipart/form-data'}
                 }
@@ -534,7 +604,6 @@
                 formData.append('checklist_file', this.form.file);
                 formData.append('time_in', this.form.time_in);
                 formData.append('track_by_id', this.form.track_by_id);
-                formData.append('id', this.form.id);
                 formData.append('time_out', this.form.time_out);
                 formData.append('current_readings', this.form.current_readings);
                 formData.append('next_readings', this.form.next_readings);
@@ -550,6 +619,7 @@
                 formData.append('fuel_balance_id', this.form.fuel_balance_id);
                 formData.append('item_cost_qty', JSON.stringify(this.form.item_cost_qty));
                 formData.append('maintenance', JSON.stringify(this.form.maintenance));
+                formData.append('service_required', JSON.stringify(this.form.service_required));
                 formData.append('_method', 'PUT');
                 const config = {
                     headers: {'Content-Type': 'multipart/form-data'}
@@ -614,7 +684,7 @@
             },
             listen() {
                 if (this.edit) {
-                    this.form = this.$store.state.job_card
+                    this.form = this.$store.state.job_card;
                     this.service_type = this.$store.state.job_card.service_type;
                     this.show_track_by = true;
                     this.track_name = this.$store.state.job_card.track_name;
@@ -624,12 +694,13 @@
                     this.service_types = this.form.service_types;
                     this.form.item_cost_qty = JSON.parse(this.$store.state.job_card.item_cost_qty);
                     this.form.maintenance = JSON.parse(this.$store.state.job_card.maintenance);
+                    this.form.service_required = JSON.parse(this.$store.state.job_card.service_required);
                     if (this.$store.state.job_card.service_provider_id === null || this.$store.state.job_card.service_provider_id === 'null') {
                         this.internal = true;
                     } else {
                         this.external = true;
                     }
-                    console.log(this.form)
+                    this.status = this.$store.state.job_card.status;
                 }
             },
         },
@@ -660,9 +731,24 @@
 
     .cause {
         margin-left: 15px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
-
+    .s_add{
+        margin-left: 10px;
+        margin-bottom: 5px;
+    }
+    .s_descr{
+        margin-left:7px;
+        margin-bottom: 5px;
+    }
+    .s_qty{
+        margin-left:5px;
+        margin-bottom: 5px;
+    }
+  .s_part{
+     margin-left:2px;
+      margin-bottom: 5px;
+  }
     .vdp-datepicker input {
         border-radius: 0;
         box-shadow: none;

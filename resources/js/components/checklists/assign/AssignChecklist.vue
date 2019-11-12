@@ -26,8 +26,8 @@
                             <datepicker v-model="form.start_date" required></datepicker>
                         </div>
 
-                        <div class="form-group" v-if="show_expiry_duration">
-                            <label>Reminder before(No. of {{date_type}})</label>
+                        <div class="form-group">
+                            <label>Reminder before(No. of days)</label>
                             <input type="number" class="form-control" v-model="form.reminder_before" required>
                         </div>
                         <button type="submit" class="btn btn-primary">{{edit ? 'Update': 'Save'}}</button>
@@ -102,9 +102,9 @@
                   })
             },
             assignChecklist(){
-                    if (parseInt(this.form.reminder_before) > parseInt(this.counter)){
-                    return this.$toastr.e(`Duration cannot be greater than ${this.counter} ${this.date_type}`)
-                }
+                //     if (parseInt(this.form.reminder_before) > parseInt(this.counter)){
+                //     return this.$toastr.e(`Duration cannot be greater than ${this.counter} ${this.date_type}`)
+                // }
                 this.form.start_date = this.convertDate(this.form.start_date);
                 this.edit_checklist ? this.update() : this.save();
 

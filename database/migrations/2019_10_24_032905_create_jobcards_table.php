@@ -20,6 +20,7 @@ class CreateJobcardsTable extends Migration
             $table->integer('service_provider_type_id');
             $table->string('service_provider_id')->nullable();
             $table->text('item_cost_qty')->nullable();
+            $table->text('service_required')->nullable();
             $table->string('labour')->nullable();
             $table->string('cost')->nullable();
             $table->string('supplier_id')->nullable();
@@ -37,6 +38,8 @@ class CreateJobcardsTable extends Migration
             $table->time('time_out');
             $table->text('maintenance')->nullable();
             $table->string('card_no')->nullable();
+            $table->dateTime('closed_at')->nullable();
+            $table->string('status')->nullable()->default(1);
             $table->timestamps();
         });
     }
