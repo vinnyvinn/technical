@@ -22,7 +22,8 @@ export default new Vuex.Store({
         jobs:{},
         fuel_reports:{},
         parts:{},
-        categories:{}
+        categories:{},
+        users:{}
     },
     mutations:{
      pathTo(state, to) {
@@ -78,6 +79,9 @@ export default new Vuex.Store({
         },
         updateCategory(state,category){
          state.categories = category;
+        },
+        updateUser(state,user){
+         state.users = user;
         }
     },
     actions:{
@@ -134,6 +138,9 @@ export default new Vuex.Store({
         },
         updateCategory({commit},category){
         commit('updateCategory',category);
+        },
+        updateUser({commit},user){
+        commit('updateUser',user);
         }
     }
 })

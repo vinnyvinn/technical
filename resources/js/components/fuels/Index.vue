@@ -34,8 +34,9 @@
                             <td>
                                 <button class="btn btn-success btn-sm" @click="editFuel(fuel)"><i
                                     class="fa fa-edit"></i></button>
-                                <button class="btn btn-danger btn-sm" @click="deleteFuel(fuel.id)"><i
-                                    class="fa fa-trash"></i></button>
+                                <router-link :to="{path: '/fuel/'+fuel.id}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></router-link>
+<!--                                <button class="btn btn-danger btn-sm" @click="deleteFuel(fuel.id)"><i-->
+<!--                                    class="fa fa-trash"></i></button>-->
                             </td>
                         </tr>
                         </tbody>

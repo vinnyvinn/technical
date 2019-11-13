@@ -19,6 +19,8 @@ import JobcardReport from "../components/reports/jobs/JobcardReport";
 import FuelReport from "../components/reports/fuels/FuelReport";
 import Parts from "../components/parts/Index";
 import Category from "../components/categories/Index";
+import ShowFuel from "../components/fuels/ShowFuel";
+import Users from "../components/users/Index";
 
 
 Vue.use(VueRouter);
@@ -33,12 +35,14 @@ function guard(to, from, next) {
 const routes = [
     {path:'/login',component: Login},
     {path:'/signup',component: Register},
+    {path:'/users',component: Users, beforeEnter: guard},
     {path:'/service-types',component: ServiceTypes, beforeEnter: guard},
     {path:'/track-by',component: TrackBy, beforeEnter: guard},
     {path:'/fuel-balance',component: FuelBalance, beforeEnter: guard},
     {path:'/service-provider-types',component: ServiceProviderTypes, beforeEnter: guard},
     {path:'/machines',component: Machines, beforeEnter: guard},
     {path:'/job-card',component:JobCard, beforeEnter: guard},
+    {path:'/fuel/:id',component:ShowFuel, beforeEnter: guard},
     {path:'/fuel',component:Fuel, beforeEnter: guard},
     {path:'/expense',component:Expense, beforeEnter: guard},
     {path:'/suppliers',component:Supplier, beforeEnter: guard},

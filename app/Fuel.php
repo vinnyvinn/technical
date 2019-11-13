@@ -22,4 +22,5 @@ class Fuel extends Model
     {
         return $this->belongsTo(FuelSupplier::class,'supplier_id');
     }
+
 }

@@ -60,6 +60,7 @@
                     </a>
                     <ul class="treeview-menu">
                         <li style="display: none"><router-link to="/service-provider-types">Service Provider Types</router-link></li>
+                        <li><router-link to="/users">Users</router-link></li>
                         <li><router-link to="/fuel-balance">Fuel Balance</router-link></li>
                         <li><router-link to="/track-by">Track By</router-link></li>
                         <li><router-link to="/service-types">Service Types</router-link></li>

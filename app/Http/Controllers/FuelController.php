@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Fuel;
+use App\Http\Resources\FuelPrintResource;
 use App\Http\Resources\FuelResource;
 use App\Http\Resources\FuelSupplierResource;
 use App\Machine;
@@ -42,7 +43,7 @@ class FuelController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json(new FuelPrintResource(Fuel::find($id)));
     }
 
     /**

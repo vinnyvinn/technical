@@ -97,8 +97,10 @@
                     </table>
                 </div>
             </div>
-
-            <button @click="printDiv('printMe')">Print only the above div</button>
+            <div class="print_item">
+                <router-link :to="{path:'/job-card'}" class="btn btn-outline-danger" style="margin-bottom: 10px">Back</router-link>
+                <button @click="printDiv('printMe')" class="btn btn-success" style="margin-bottom: 10px"><i class="fa fa-print"></i>Print Job Card</button>
+            </div>
         </div>
     </section>
 </div>
@@ -163,7 +165,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .invoice-box {
         max-width: 100%;
         margin: auto;
@@ -268,6 +270,10 @@
 
     .rtl table tr td:nth-child(2) {
         text-align: left;
+    }
+    .print_item{
+        margin-left: 20%;
+        margin-bottom: 5px;
     }
 
 </style>

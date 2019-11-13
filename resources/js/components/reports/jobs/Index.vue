@@ -18,20 +18,18 @@
                     <table class="table table-striped dt">
                         <thead>
                         <tr>
-                            <th>#</th>
                             <th>Card #</th>
                             <th>Machine</th>
                             <th>Driver</th>
-                            <th>Supplier</th>
+                            <th>Created At</th>
                             </tr>
                         </thead>
                         <tbody>
                         <tr v-for="job in jobs">
-                            <td>{{job.id}}</td>
-                            <td>{{job.card_no}}</td>
-                            <td>{{job.machine}}</td>
-                            <td>{{job.driver}}</td>
-                            <td>{{job.supplier}}</td>
+                            <td>{{job.Card}}</td>
+                            <td>{{job.Machine}}</td>
+                            <td>{{job.Driver}}</td>
+                            <td>{{job.Created}}</td>
                         </tr>
                         </tbody>
                     </table>

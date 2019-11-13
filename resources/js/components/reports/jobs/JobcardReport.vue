@@ -52,8 +52,9 @@
                 }
                       axios.post('job-report',this.form)
                     .then(res =>{
-                        this.show_job = true;
-                        this.$store.dispatch('listJobReports',res.data)
+                        console.log(res.data)
+                      this.show_job = true;
+                       this.$store.dispatch('listJobReports',res.data)
                     })
                     .catch(error => error.response)
             },

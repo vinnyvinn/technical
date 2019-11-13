@@ -18,20 +18,20 @@
                     <table class="table table-striped dt">
                         <thead>
                         <tr>
-                            <th>#</th>
                             <th>Vehicle</th>
+                            <th>Fuel On</th>
                             <th>Litres</th>
-                            <th>Fuel Type</th>
                             <th>Pump Price</th>
+                            <th>Currency</th>
                             </tr>
                         </thead>
                         <tbody>
                         <tr v-for="fuel in fuels">
-                            <td>{{fuel.id}}</td>
-                            <td>{{fuel.vehicle}}</td>
-                            <td>{{fuel.litres}}</td>
-                            <td>{{fuel.fuel_type}}</td>
-                            <td>{{fuel.price}}</td>
+                            <td>{{fuel.Vehicle}}</td>
+                            <td>{{fuel.fuel_on}}</td>
+                            <td>{{fuel.Litres}}</td>
+                            <td>{{fuel.Rate}}</td>
+                            <td>{{fuel.Currency}}</td>
                         </tr>
                         </tbody>
                     </table>
