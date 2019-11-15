@@ -22,6 +22,7 @@ class ChecklistResource extends JsonResource
             'checklist_file' => $this->checklist_file,
             'name' => $this->name,
             'checklists' => $this->checklists,
+            'duration_type' => $this->expirytype->name,
         ];
     }
 }

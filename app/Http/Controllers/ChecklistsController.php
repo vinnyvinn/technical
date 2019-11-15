@@ -77,7 +77,7 @@ class ChecklistsController extends Controller
             \Image::make($request->get('checklist_file'))->save(public_path('uploads/').$name);
         }
         $name ? $request['checklist_file'] = $name : '';
-        CheckList::find($id)->update($request->except(['expiry_type','check_list']));
+        CheckList::find($id)->update($request->except(['expiry_type','check_list','duration_type']));
         return response()->json(new ChecklistResource(CheckList::find($id)));
     }
 

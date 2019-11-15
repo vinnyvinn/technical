@@ -2282,6 +2282,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.edit) {
         this.form = this.$store.state.checklists;
         this.show_duration = true;
+        this.duration_type = this.$store.state.checklists.duration_type;
         this.form.checklists = JSON.parse(this.$store.state.checklists.checklists);
 
         if (this.form.checklist_file === '' || this.form.checklist_file === null) {
