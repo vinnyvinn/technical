@@ -21,6 +21,7 @@ import Parts from "../components/parts/Index";
 import Category from "../components/categories/Index";
 import ShowFuel from "../components/fuels/ShowFuel";
 import Users from "../components/users/Index";
+import AppPaginate from "../components/AppPaginate";
 
 
 Vue.use(VueRouter);
@@ -54,6 +55,7 @@ const routes = [
     {path:'/fuel-report',component:FuelReport, beforeEnter: guard},
     {path:'/parts',component:Parts, beforeEnter: guard},
     {path:'/categories',component:Category, beforeEnter: guard},
+    {path:'/pagi',component:AppPaginate, beforeEnter: guard},
 
 ];
 

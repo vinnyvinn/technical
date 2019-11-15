@@ -7,35 +7,13 @@
 
 import AppStorage from "./helpers/AppStorage";
 
-
 window.Vue = require('vue');
 import VueToastr from 'vue-toastr';
 Vue.use(VueToastr);
-import datePicker from 'vue-bootstrap-datetimepicker';
-import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
-import VueTimepicker from 'vue2-timepicker';
-import 'vue2-timepicker/dist/VueTimepicker.css'
 import moment from 'moment'
-import VueHtmlToPaper from 'vue-html-to-paper';
 import JsonExcel from 'vue-json-excel'
 
 Vue.component('downloadExcel', JsonExcel)
-
-const options = {
-    name: '_blank',
-    specs: [
-        'fullscreen=yes',
-        'titlebar=yes',
-        'scrollbars=yes'
-    ],
-    styles: [
-        'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-        'https://unpkg.com/kidlat-css/css/kidlat.css',
-        '/assets/css/lib/print.css',
-
-    ]
-}
-Vue.use(VueHtmlToPaper, options);
 
 Vue.config.productionTip = false
 Vue.filter('formatDate', function(value) {
@@ -44,8 +22,6 @@ Vue.filter('formatDate', function(value) {
     }
 });
 
-Vue.use(datePicker);
-Vue.use(VueTimepicker)
 import User from './helpers/User';
 window.User = User;
 
@@ -75,21 +51,6 @@ router.beforeEach((to, from, next) => {
 window.eventBus = new Vue();
 window.axios = require('axios')
 axios.defaults.baseURL ='http://localhost:8000/api/';
-
-jQuery.extend(true, jQuery.fn.datetimepicker.defaults, {
-    icons: {
-        time: 'far fa-clock',
-        date: 'far fa-calendar',
-        up: 'fas fa-arrow-up',
-        down: 'fas fa-arrow-down',
-        previous: 'fas fa-chevron-left',
-        next: 'fas fa-chevron-right',
-        today: 'fas fa-calendar-check',
-        clear: 'far fa-trash-alt',
-        close: 'far fa-times-circle'
-    }
-});
-
 
 /**
  * The following block of code may be used to automatically register your

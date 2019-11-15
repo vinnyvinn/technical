@@ -119,7 +119,7 @@
                         colReorder: true,
 
                     });
-                },100)
+                },1000)
             },
         },
         components:{
