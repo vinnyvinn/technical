@@ -24,11 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "bootstrap-sass": "^3.4.1",
-        "datatables.net-bs": "^1.10.20",
-        "datatables.net-responsive-bs": "^2.2.3",
         "moment": "^2.24.0",
-        "vue-datatables": "^0.1.4",
         "vue-json-excel": "^0.2.98",
         "vue-multiselect": "^2.1.6",
         "vue-resource": "^1.5.1",

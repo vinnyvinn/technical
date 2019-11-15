@@ -73,7 +73,7 @@ Vue.component('app-top-nav', require('./components/layouts/AppTopNav').default);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-console.log(AppStorage.getToken())
+
 const app = new Vue({
     el: '#app',
     router,

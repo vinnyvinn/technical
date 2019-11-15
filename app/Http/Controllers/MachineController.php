@@ -24,7 +24,6 @@ class MachineController extends Controller
     {
         return response()->json(MachineResource::collection(Machine::all()));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -70,7 +69,6 @@ class MachineController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $machine = Machine::find($id);
         $request['warranty'] = Carbon::parse($request->warranty)->format('Y-m-d');
         $machine->update($request->except(['track_name','assign_to_id','service_type_id','service_types','insurance_file']));

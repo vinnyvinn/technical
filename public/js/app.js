@@ -56971,44 +56971,11 @@ Vue.component('app-top-nav', __webpack_require__(/*! ./components/layouts/AppTop
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-console.log(_helpers_AppStorage__WEBPACK_IMPORTED_MODULE_0__["default"].getToken());
 var app = new Vue({
   el: '#app',
   router: _routes_router__WEBPACK_IMPORTED_MODULE_6__["default"],
   store: _store_store__WEBPACK_IMPORTED_MODULE_7__["default"]
 });
-
-/***/ }),
-
-/***/ "./resources/js/components/AppPaginate.vue":
-/*!*************************************************!*\
-  !*** ./resources/js/components/AppPaginate.vue ***!
-  \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-var render, staticRenderFns
-var script = {}
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_0__["default"])(
-  script,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-component.options.__file = "resources/js/components/AppPaginate.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
@@ -60457,8 +60424,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_categories_Index__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../components/categories/Index */ "./resources/js/components/categories/Index.vue");
 /* harmony import */ var _components_fuels_ShowFuel__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../components/fuels/ShowFuel */ "./resources/js/components/fuels/ShowFuel.vue");
 /* harmony import */ var _components_users_Index__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../components/users/Index */ "./resources/js/components/users/Index.vue");
-/* harmony import */ var _components_AppPaginate__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../components/AppPaginate */ "./resources/js/components/AppPaginate.vue");
-
 
 
 
@@ -60573,10 +60538,6 @@ var routes = [{
 }, {
   path: '/categories',
   component: _components_categories_Index__WEBPACK_IMPORTED_MODULE_20__["default"],
-  beforeEnter: guard
-}, {
-  path: '/pagi',
-  component: _components_AppPaginate__WEBPACK_IMPORTED_MODULE_23__["default"],
   beforeEnter: guard
 }];
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
